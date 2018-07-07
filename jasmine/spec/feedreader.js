@@ -27,9 +27,8 @@ $(function() {
         });
 
 
-        /* TODO: Write a test that loops through each feed
-         * in the allFeeds object and ensures it has a URL defined
-         * and that the URL is not empty.
+        /* This test loops through each feed in the allFeeds object
+         * and ensures it has a URL defined and that the URL is not empty.
          */
          allFeeds.forEach(function(key) {
            it('feed URL is defined and not empty', function() {
@@ -38,11 +37,9 @@ $(function() {
            });
          });
 
-
-        /* TODO: Write a test that loops through each feed
-         * in the allFeeds object and ensures it has a name defined
-         * and that the name is not empty.
-         */
+         /* This test loops through each feed in the allFeeds object
+          * and ensures it has a name defined and that the name is not empty.
+          */
          allFeeds.forEach(function(key) {
            it('feed name is defined and not empty', function() {
              expect(key.name).toBeDefined();
@@ -51,34 +48,52 @@ $(function() {
          });
     });
 
+    /* This test suite covers the menu */
+    describe('The menu', function() {
+        let body, menuIcon;
 
-    /* TODO: Write a new test suite named "The menu" */
+        beforeEach(function(){
+            body = $('body');
+            menuIcon = $('.menu-icon-link');
+        });
 
-        /* TODO: Write a test that ensures the menu element is
-         * hidden by default. You'll have to analyze the HTML and
-         * the CSS to determine how we're performing the
-         * hiding/showing of the menu element.
+        /* This test ensures the menu element is
+         * hidden by default.
          */
+         it('menu is hidden by default', function() {
+           expect(body.attr('class')).toEqual('menu-hidden');
+         });
 
-         /* TODO: Write a test that ensures the menu changes
-          * visibility when the menu icon is clicked. This test
-          * should have two expectations: does the menu display when
+         /* This test ensures the menu changes visibility
+          * when the menu icon is clicked. This test
+          * has two expectations: does the menu display when
           * clicked and does it hide when clicked again.
           */
+          it('menu changes visibility when menu icon is clicked', function() {
+            // Trigger a click to display menu
+            menuIcon.trigger( 'click' );
+            expect(body.attr('class')).toEqual('');
+            // Trigger a second click to hide menu
+            menuIcon.trigger( 'click' );
+            expect(body.attr('class')).toEqual('menu-hidden');
+          });
+    });
 
-    /* TODO: Write a new test suite named "Initial Entries" */
-
+    /* This test suite covers initial feed entries */
+    describe('Initial Entries', function() {
         /* TODO: Write a test that ensures when the loadFeed
          * function is called and completes its work, there is at least
          * a single .entry element within the .feed container.
          * Remember, loadFeed() is asynchronous so this test will require
          * the use of Jasmine's beforeEach and asynchronous done() function.
          */
+    });
 
-    /* TODO: Write a new test suite named "New Feed Selection" */
-
+    /* This test suite covers new feeds */
+    describe('New Feed Selection', function() {
         /* TODO: Write a test that ensures when a new feed is loaded
          * by the loadFeed function that the content actually changes.
          * Remember, loadFeed() is asynchronous.
          */
+    });
 }());
