@@ -61,7 +61,11 @@ $(function() {
        * hidden by default.
        */
        it('should be hidden by default', function() {
-         expect(body.attr('class')).toEqual('menu-hidden');
+         if(typeof body != 'undefined') {
+           expect(body.attr('class')).toEqual('menu-hidden');
+         } else {
+           throw 'body variable is undefined';
+         }
        });
 
        /* This test ensures the menu changes visibility
@@ -70,43 +74,80 @@ $(function() {
         * clicked and does it hide when clicked again.
         */
         it('should change visibility when menu icon is clicked', function() {
-          // Trigger a click to display menu
-          menuIcon.trigger( 'click' );
-          expect(body.attr('class')).toEqual('');
-          // Trigger a second click to hide menu
-          menuIcon.trigger( 'click' );
-          expect(body.attr('class')).toEqual('menu-hidden');
+          if(typeof body != 'undefined' && typeof menuIcon != 'undefined') {
+            // Trigger a click to display menu
+            menuIcon.trigger( 'click' );
+            expect(body.attr('class')).toEqual('');
+            // Trigger a second click to hide menu
+            menuIcon.trigger( 'click' );
+            expect(body.attr('class')).toEqual('menu-hidden');
+          } else {
+            throw 'body and/or menuIcon variable is undefined';
+          }
         });
     });
 
     /* This test suite covers the loading of initial feed entries */
     describe('Initial Entries', function() {
       let feedContainer;
+      let feedIndex = 0;
 
-      /* TODO: Write a test that ensures when the loadFeed
-       * function is called and completes its work, there is at least
-       * a single .entry element within the .feed container.
-       * Remember, loadFeed() is asynchronous so this test will require
-       * the use of Jasmine's beforeEach and asynchronous done() function.
-       */
-       beforeEach(function(done) {
-         loadFeed(0, function() {
-           done();
-         });
-         feedContainer = $('.feed');
-       });
+      beforeEach(function(done) {
+        if(feedIndex >=0 && feedIndex < allFeeds.length) {
+          loadFeed(feedIndex, function() {
+            done();
+          });
+          feedContainer = $('.feed');
+        } else {
+          throw 'feedIndex value is out of bounds';
+        }
+      });
 
-       it('should contain at least one feed entry', function(done) {
-         expect(feedContainer.children('a').length > 0).toBe(true);
-         done();
-       });
+      /* This test ensures when the asynchronous loadFeed
+      * function is called and completes its work, there is at least
+      * a single .entry element within the .feed container.
+      */
+      it('should contain at least one feed entry', function(done) {
+        if(typeof feedContainer != 'undefined') {
+          expect(feedContainer.find('.entry').length > 0).toBe(true);
+          done();
+        } else {
+          throw 'feedContainer is undefined';
+        }
+      });
     });
 
     /* This test suite covers new feeds */
     describe('New Feed Selection', function() {
-        /* TODO: Write a test that ensures when a new feed is loaded
-         * by the loadFeed function that the content actually changes.
-         * Remember, loadFeed() is asynchronous.
-         */
+      let initialEntryText, newEntryText;
+      let newFeedIndex = 2;
+
+      beforeEach(function(done) {
+        // Get initial entry
+        initialEntryText = $('.feed').find('h2').first().text();
+        // Check for valid array access
+        if(newFeedIndex >=0 && newFeedIndex < allFeeds.length) {
+          // Load a new feed
+          loadFeed(newFeedIndex, function() {
+            done();
+          });
+        } else {
+          throw 'newFeedIndex value is out of bounds';
+        }
+      });
+
+      /* This test ensures when a new feed is loaded
+       * by the loadFeed function that the content actually changes.
+       */
+       it('should have new content', function(done) {
+         // Get new entry
+         newEntryText = $('.feed').find('h2').first().text();
+         if(typeof initialEntryText != 'undefined' && typeof newEntryText != 'undefined'){
+           expect(newEntryText).not.toEqual(initialEntryText);
+           done();
+         } else {
+           throw 'initialEntryText and/or newEntryText variable is undefined';
+         }
+       })
     });
 }());
