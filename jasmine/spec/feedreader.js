@@ -80,7 +80,7 @@ $(function() {
             expect(body.attr('class')).toEqual('');
             // Trigger a second click to hide menu
             menuIcon.trigger( 'click' );
-            expect(body.attr('class')).toEqual('menu-hidden');
+            expect(body.hasClass('menu-hidden')).toBe(true);
           } else {
             throw 'body and/or menuIcon variable is undefined';
           }
@@ -120,28 +120,35 @@ $(function() {
     /* This test suite covers new feeds */
     describe('New Feed Selection', function() {
       let initialEntryText, newEntryText;
+      let initialFeedIndex = 0;
       let newFeedIndex = 2;
 
       beforeEach(function(done) {
-        // Get initial entry
-        initialEntryText = $('.feed').find('h2').first().text();
-        // Check for valid array access
-        if(newFeedIndex >=0 && newFeedIndex < allFeeds.length) {
-          // Load a new feed
-          loadFeed(newFeedIndex, function() {
-            done();
+        if(initialFeedIndex >=0 && initialFeedIndex < allFeeds.length) {
+          // Load initial feed
+          loadFeed(initialFeedIndex, function() {
+            // Get initial entry
+            initialEntryText = $('.feed').find('h2').first().text();
+            if(newFeedIndex >=0 && newFeedIndex < allFeeds.length) {
+              // Load a new feed
+              loadFeed(newFeedIndex, function() {
+                // Get new entry
+                newEntryText = $('.feed').find('h2').first().text();
+                done();
+              });
+            } else {
+              throw 'newFeedIndex value is out of bounds';
+            }
           });
-        } else {
-          throw 'newFeedIndex value is out of bounds';
-        }
-      });
+          } else {
+            throw 'initialFeedIndex value is out of bounds';
+          }
+        });
 
       /* This test ensures when a new feed is loaded
        * by the loadFeed function that the content actually changes.
        */
        it('should have new content', function(done) {
-         // Get new entry
-         newEntryText = $('.feed').find('h2').first().text();
          if(typeof initialEntryText != 'undefined' && typeof newEntryText != 'undefined'){
            expect(newEntryText).not.toEqual(initialEntryText);
            done();
